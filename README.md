@@ -1,8 +1,4 @@
-reclaimcities-web
+kiqstnd
 =================
 
-Reclaim Cities Web Application
-
-Please consult the `docs` folder
-
-This project is currently in pre-alpha development. More documentation will arrive soon!
+Bike parking locator (adapted from Reclaim Cities engine)
