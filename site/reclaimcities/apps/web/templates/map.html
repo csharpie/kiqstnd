@@ -233,10 +233,7 @@
             <strong>INSTRUCTIONS</strong>&nbsp;
             Enter a street address (example: <em>1500 Chestnut St</em>).
         </p>
-        <p>
-            <em>Search</em> finds all vacancies within a half mile radius of the entered address.<br/>
-            <em>Add</em> finds the address, then gives the option of adding it as a vacant property
-        </p>
+
         <input id="streetAddressInput" type="text" value=""/>
         <input type="button" onclick="search()" value="Search"/>
         <input type="button" onclick="findLocations()" value="Add"/>
@@ -248,14 +245,4 @@
     </div>
 
     <div id="mapDiv"></div>
-
-    <div id="mapKeyDiv">
-        <ul>
-            {% load staticfiles %}
-            <li class="mapKeyLabel">Map Key</li>
-            <li><img src="{% static 'images/pin-residential.png' %}"/>Residential</li>
-            <li><img src="{% static 'images/pin-nonresidential.png' %}"/>Non-residential</li>
-            <li><img src="{% static 'images/pin-lot.png' %}"/>Lot</li>
-        </ul>
-    </div>
 {% endblock %}

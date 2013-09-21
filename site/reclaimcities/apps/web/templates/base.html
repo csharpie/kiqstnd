@@ -30,42 +30,27 @@ I namespaced them so they don't interfere with anything
 
 <body>
 
+<!--
 <div id="navDiv">
     <ul>
         <li><a class="navItem" href="/map">Map</a></li>
-        <li><a class="navItem" href="/blog">Blog</a></li>
-        <li><a class="navItem" href="/resources">Resources</a></li>
-        <li><a class="navItem" href="/about">About</a></li>
         <li><a class="navItem" href="/help">Help</a></li>
     </ul>
 </div>
+-->
 
 {% block heading %}
 <div id="headingDiv">
     <div id="logoDiv">
-        <img id="headingLogo" src="{% static 'images/logo_beta.png' %}">
+        <img id="headingLogo" src="{% static 'images/logo.png' %}">
     </div>
     <div id="descriptionDiv">
-        A transparent approach to abandoned &amp; vacant property in our communities; for the people, by the people.
-    </div>
-    <div id="socialMediaDiv">
-        <ul>
-        	<!-- Add social media links to your project -->
-            <li><a href="https://twitter.com/" target="_social"><img src="{% static 'images/twitter.png' %}"/></a></li>
-            <li><a href="https://www.facebook.com/" target="_social"><img src="{% static 'images/facebook.png' %}"/></a></li>
-            <li><a href="https://plus.google.com/" target="_social"><img src="{% static 'images/googleplus.png' %}"/></a></li>
-        </ul>
+        Find bike parking!
     </div>
 </div>
 {% endblock %}
 
 {% block content %} {% endblock %}
-
-<div id="footerDiv">
-    <p>The Reclaim Cities engine was originally developed by <a href="http://www.pacdc.org/" target="_pacdc">PACDC</a> and volunteers. Feel free to <a href="http://github.com/ReclaimCities" target="_github">use our code</a> for your city.</p>
-    <p><a href="http://openstreetmaps.org" target="_new">Map by OpenStreetMap</a> - <a href="http://geoservices.tamu.edu" target="_new">Geocoding by Texas A&amp;M Geoservices</a>
-    <p>Feedback on the beta? E-mail us at <a href="mailto:beta@reclaimphilly.org">beta@reclaimphilly.org</a></p>
-</div>
 
 </body>
 </html>

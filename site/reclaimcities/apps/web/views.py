@@ -11,20 +11,9 @@ LOCATION_SERVICE = LocationService()
 def index(request):
     return map(request)
 
+
 def map(request):
     return render_to_response("map.html")
-
-def blog(request):
-    return render_to_response("blog.html")
-
-def help(request):
-    return render_to_response("help.html")
-
-def resources(request):
-    return render_to_response("resources.html")
-
-def about(request):
-    return render_to_response("about.html")
 
 
 def add_location(request):
@@ -43,6 +32,7 @@ def add_location(request):
             dict({"form":form}.items() + request.GET.items()) # Adds on the address, latitude, and longitude
         )
 
+
 def update_location(request, id=None):
 
     locations = Location.objects.filter(id=id)
@@ -52,31 +42,20 @@ def update_location(request, id=None):
 
     if request.method == "POST":
         updateData = location.__dict__
-        updateFiles = {"picture1":location.picture1,
-                       "picture2": location.picture2,
-                       "picture3": location.picture3,}
+        updateFiles = {"picture": location.picture}
 
         # Set fields the form/request doesn't have set
         if 'description' in request.POST:
             updateData['description'] = request.POST['description']
 
-        if 'lot_type' in request.POST:
-            updateData['lot_type'] = request.POST['lot_type']
+        if 'type' in request.POST:
+            updateData['type'] = request.POST['type']
 
-        if 'picture1' in request.FILES:
-            updateFiles['picture1'] = request.FILES['picture1']
+        if 'picture' in request.FILES:
+            updateFiles['picture'] = request.FILES['picture']
 
-        if 'picture2' in request.FILES:
-            updateFiles['picture2'] = request.FILES['picture2']
-
-        if 'picture1' in request.FILES:
-            updateFiles['picture3'] = request.FILES['picture3']
-
-#TODO Must also remember to delete the files from disk
         if 'picture-clear' in request.POST:
-            updateFiles['picture1'] = None
-            updateFiles['picture2'] = None
-            updateFiles['picture3'] = None
+            updateFiles['picture'] = None
             updateData['picture-clear'] = request.POST['picture-clear']
 
         form = AddLocation(data=updateData, files=updateFiles, instance=location)
@@ -84,14 +63,15 @@ def update_location(request, id=None):
             location = form.save()
             return HttpResponseRedirect("/location/" + str(location.id))
 
-        return render(request, "update.html", {"form":form, "id":id})
+        return render(request, "update.html", {"form": form, "id": id})
     else:
         form = AddLocation(instance=location)
 
-        return render(request, "update.html",{"form":form, "id":id}) # Adds on the address, latitude, and longitude
+        return render(request, "update.html",{"form": form, "id": id}) # Adds on the address, latitude, and longitude
+
 
 def view_location(request, id):
-    if(request.method != "GET"):
+    if request.method != "GET":
         return HttpResponseForbidden("Only GET requests supported")
 
     # Get the Location to display
