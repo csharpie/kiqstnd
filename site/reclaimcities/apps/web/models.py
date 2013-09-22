@@ -46,14 +46,7 @@ class Location(models.Model):
         return "(" + str(self.id) + ") Latitude: " + str(self.latitude) + ", " + "Longitude: " + str(self.longitude)
 
 
-class BikeTheft(models.Model):
-    latitude = models.DecimalField(max_digits=20, decimal_places=17)
-    longitude = models.DecimalField(max_digits=20, decimal_places=17)
-    moment = models.DateTimeField()
-    value = models.IntegerField()
-
-
 class GeocodeCache(models.Model):
     address = models.CharField(max_length=200, blank=False, null=False)
-    latitude = models.DecimalField(max_digits=20, decimal_places=17)
-    longitude = models.DecimalField(max_digits=20, decimal_places=17)
+    latitude = models.DecimalField(max_digits=40, decimal_places=20)
+    longitude = models.DecimalField(max_digits=40, decimal_places=20)

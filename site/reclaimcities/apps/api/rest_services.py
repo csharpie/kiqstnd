@@ -332,8 +332,8 @@ def geocode(request, streetAddress):
 @csrf_exempt
 def load_file(request):
 
-    LOAD_URLS = ['http://gis.phila.gov/ArcGIS/rest/services/Streets/Bike_Racks/MapServer/1/query?text=&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22rings%22%3A%5B%5B%5B-75.18733978271484%2C39.95422755797634%5D%2C%5B-75.13446807861328%2C39.95106936461956%5D%2C%5B-75.13652801513672%2C39.92448212528485%5D%2C%5B-75.12931823730467%2C39.905259175197614%5D%2C%5B-75.14305114746094%2C39.88365983864681%5D%2C%5B-75.19351959228516%2C39.88207913214082%5D%2C%5B-75.22064208984375%2C39.92764154592116%5D%2C%5B-75.18733978271484%2C39.95422755797634%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&objectIds=&where=1%3D1&time=&returnCountOnly=false&returnIdsOnly=false&returnGeometry=true&maxAllowableOffset=&outSR=&outFields=*&f=pjson',
-                'http://gis.phila.gov/ArcGIS/rest/services/Streets/Bike_Racks/MapServer/1/query?text=&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22rings%22%3A%5B%5B%5B-75.18733978271484%2C39.95422755797634%5D%2C%5B-75.13446807861328%2C39.95106936461956%5D%2C%5B-75.0864028930664%2C39.97659391922923%5D%2C%5B-75.05413055419922%2C40.004212850519885%5D%2C%5B-75.05207061767578%2C40.024985445869156%5D%2C%5B-75.20793914794922%2C40.02261926678969%5D%2C%5B-75.20622253417969%2C39.98264473554439%5D%2C%5B-75.18630981445312%2C39.95291166179976%5D%5D%5D%7D%0D%0A&geometryType=esriGeometryPolygon&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&objectIds=&where=1%3D1&time=&returnCountOnly=false&returnIdsOnly=false&returnGeometry=true&maxAllowableOffset=&outSR=&outFields=*&f=pjson']
+    LOAD_URLS = ['http://gis.phila.gov/ArcGIS/rest/services/Streets/Bike_Racks/MapServer/1/query?text=&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22rings%22%3A%5B%5B%5B-75.18733978271484%2C39.95422755797634%5D%2C%5B-75.13446807861328%2C39.95106936461956%5D%2C%5B-75.13652801513672%2C39.92448212528485%5D%2C%5B-75.12931823730467%2C39.905259175197614%5D%2C%5B-75.14305114746094%2C39.88365983864681%5D%2C%5B-75.19351959228516%2C39.88207913214082%5D%2C%5B-75.22064208984375%2C39.92764154592116%5D%2C%5B-75.18733978271484%2C39.95422755797634%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&objectIds=&where=1%3D1&time=&returnCountOnly=false&returnIdsOnly=false&returnGeometry=true&maxAllowableOffset=&outSR=4326&outFields=*&f=pjson',
+                 'http://gis.phila.gov/ArcGIS/rest/services/Streets/Bike_Racks/MapServer/1/query?text=&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22rings%22%3A%5B%5B%5B-75.18733978271484%2C39.95422755797634%5D%2C%5B-75.13446807861328%2C39.95106936461956%5D%2C%5B-75.0864028930664%2C39.97659391922923%5D%2C%5B-75.05413055419922%2C40.004212850519885%5D%2C%5B-75.05207061767578%2C40.024985445869156%5D%2C%5B-75.20793914794922%2C40.02261926678969%5D%2C%5B-75.20622253417969%2C39.98264473554439%5D%2C%5B-75.18630981445312%2C39.95291166179976%5D%5D%5D%7D%0D%0A&geometryType=esriGeometryPolygon&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&objectIds=&where=1%3D1&time=&returnCountOnly=false&returnIdsOnly=false&returnGeometry=true&maxAllowableOffset=&outSR=4326&outFields=*&f=pjson']
 
     location_list = []
 
@@ -341,7 +341,7 @@ def load_file(request):
         
         in_file = requests.get(load_url)
 
-        if in_file.status != 200:
+        if in_file.status_code != 200:
             return HttpResponseBadRequest("HTTP request failed - status code %d" % in_file.status)
 
         in_json = in_file.json()
@@ -352,14 +352,20 @@ def load_file(request):
             geometry = point["geometry"]
             attributes = point["attributes"]
 
-            x = geometry["x"]
-            y = geometry["y"]
-            name = attributes["location"]
+            x = round(geometry["x"], 17)
+            y = round(geometry["y"], 17)
+            print("x: " + str(x) + ", y: " + str(y))
+            # x = 1
+            # y = 1
+            name = attributes["LOCATION"]
 
-            newLocation = Location(latitude=y, longitude=x, name=name)
+            newLocation = Location(latitude=y, longitude=x, name=name, location_type="rack")
+
+            # newLocation.save()
 
             location_list.append(newLocation)
 
+    Location.objects.all().delete()
     Location.objects.bulk_create(location_list)
 
     return HttpResponse("Load OK")
