@@ -95,7 +95,7 @@ body a:hover, .clickableText:hover {
 }
 
 #searchDiv {
-    background-color: #AFA59F;
+    background-color: black;
     color: white;
     padding-top: 2px;
     padding-bottom: 10px;

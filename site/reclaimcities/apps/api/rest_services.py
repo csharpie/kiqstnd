@@ -354,3 +354,28 @@ def load_file(request):
     Location.objects.bulk_create(location_list)
 
     return HttpResponse("Load OK")
+
+@csrf_exempt
+def get_theft_points(request):
+
+    # Validate latitude - required, number only
+    try:
+        latitude = request.GET['latitude']
+        latitude = float(latitude)
+    except KeyError:
+        return HttpResponseBadRequest('Missing latitude parameter')
+    except ValueError:
+        return HttpResponseBadRequest('Non-numeric latitude parameter')
+
+    # Validate longitude - required, number only
+    try:
+        longitude = request.GET['longitude']
+        longitude = float(longitude)
+    except KeyError:
+        return HttpResponseBadRequest('Missing longitude parameter')
+    except ValueError:
+        return HttpResponseBadRequest('Non-numeric longitude parameter')
+
+    location_data = {'latitude' : latitude, 'longitude' : longitude, 'radius': 0.1}
+    re = requests.get("http://127.0.0.1:8100/search", params=location_data)
+    return json_response(re.json())

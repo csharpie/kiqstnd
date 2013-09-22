@@ -15,7 +15,15 @@
 
         $(document).ready(function () {
             rcMap = RC.map("mapDiv");
-            rcMap.addMarker(point);
+
+            $.getJSON("/services/theft?latitude={{ location.latitude }}&longitude={{ location.longitude }}", function(data, textStatus, jq){
+               for(var i = 0; i < data.length; i++)
+               {
+                    rcMap.addMarker(data[i], RC.Pins.Theft);
+               }
+               rcMap.addMarker(point);
+            });
+
             rcMap.focus(point, 18);
         });
 

@@ -14,4 +14,5 @@ urlpatterns = patterns('',
                        url(r'^location/(?P<id>\d+)/update/?$',
                            'reclaimcities.apps.api.rest_services.update_location'),
                        url(r'^load/?$', 'reclaimcities.apps.api.rest_services.load_file'),
+                       url(r'^theft/?$', 'reclaimcities.apps.api.rest_services.get_theft_points'),
 )
