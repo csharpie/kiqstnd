@@ -14,16 +14,15 @@ class Location(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
 
     # Valid types
-    VALID_TYPES = ("rack", "corral", "carousel", "pole", "tree", "fence", "bush")
     LOCATION_TYPES = (  # Keep this in-sync with VALID_TYPES
                         ("rack", "Rack"),
                         ("corral", "Corral"),
-                        ("carousel", "Carousel"),
+                        ("designer", "Designer Rack"),
                         ("pole", "Pole / Post"),
                         ("tree", "Tree"),
-                        ("fence", "Fence"),
-                        ("bush", "Burning Bush")
+                        ("fence", "Fence")
     )
+    VALID_TYPES = ("rack", "corral", "designer", "pole", "tree", "fence")
     location_type = models.CharField(max_length="10", choices=LOCATION_TYPES, blank=True, null=True)
 
     # Description

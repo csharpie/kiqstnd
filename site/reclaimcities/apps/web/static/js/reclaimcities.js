@@ -26,7 +26,7 @@ var RC = {
     LONGITUDE_DEFAULT: -75.1642,
     ZOOM_DEFAULT: 15,
     ZOOM_MAX: 18,
-    SEARCH_RADIUS_DEFAULT: 0.5, // miles //TODO Can we add some of these to configuration?
+    SEARCH_RADIUS_DEFAULT: 0.1, // miles //TODO Can we add some of these to configuration?
     MAP_ATTRIBUTION: 'Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
 };
 
@@ -86,24 +86,24 @@ RC.map = function (divId) {
         if (icon != null) {
             // do nothing
         }
-        else if( "properties" in point && "lot_type" in point.properties){
-            var lot_type = point.properties.lot_type;
-
-            if (lot_type == "nrs") {
-                icon = RC.Pins.Nonresidential;
-            }
-            else if (lot_type == "res") {
-                icon = RC.Pins.Residential;
-            }
-            else if (lot_type == "lot") {
-                icon = RC.Pins.Lot;
-            }
-            else {
-                icon = RC.Pins.X;
-            }
-        }
+//        else if( "properties" in point && "lot_type" in point.properties){
+//            var lot_type = point.properties.lot_type;
+//
+//            if (lot_type == "nrs") {
+//                icon = RC.Pins.Nonresidential;
+//            }
+//            else if (lot_type == "res") {
+//                icon = RC.Pins.Residential;
+//            }
+//            else if (lot_type == "lot") {
+//                icon = RC.Pins.Lot;
+//            }
+//            else {
+//                icon = RC.Pins.X;
+//            }
+//        }
         else {
-            icon = RC.Pins.X;
+            icon = RC.Pins.Parking;
         }
 
         marker = L.marker(point.coordinates, {icon: icon});
@@ -197,6 +197,10 @@ RC.map = function (divId) {
                 finishedCallback();
             }
         });
+    };
+
+    that.getLeafletMap = function() {
+      return that.map;
     };
 
     that.init();
@@ -404,5 +408,13 @@ RC.Pins = {
     Lot: L.icon({
         iconUrl: reclaim.globals.STATIC_URL + 'images/pin-lot.png',
         iconAnchor: [24, 65]
+    }),
+    Parking: L.icon({
+        iconUrl: reclaim.globals.STATIC_URL + 'images/parking.png',
+        iconAnchor: [16, 37]
+    }),
+    Theft: L.icon({
+        iconUrl: reclaim.globals.STATIC_URL + 'images/theft.png',
+        iconAnchor: [16, 37]
     })
 };

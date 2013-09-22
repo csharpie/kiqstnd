@@ -28,17 +28,23 @@
 
     <div class="viewRowDiv">
         <div class="viewColumnDiv">
-            <div id="viewAddressKey" class="viewKey">Address</div>
-            <div id="viewAddressValue" class="viewValue">{{ location.address }}</div>
+            <div id="viewAddressKey" class="viewKey">Name</div>
+            <div id="viewAddressValue" class="viewValue">{{ location.name }}</div>
 
             <div id="viewTypeKey" class="viewKey">Type</div>
             <div id="viewTypeValue" class="viewValue">
-                {% if location.type == "nrs" %}
-                    Non-residential
+                {% if location.location_type == "rack" %}
+                    Rack
                 {% elif location.type == "res" %}
                     Residential
-                {% elif location.type == "lot" %}
-                    Lot
+                {% elif location.type == "corral" %}
+                    Corral
+                {% elif location.type == "pole" %}
+                    Pole
+                {% elif location.type == "tree" %}
+                    Tree
+                {% elif location.type == "fence" %}
+                    Fence
                 {% else %}
                     (Unknown)
                 {% endif %}
@@ -46,7 +52,37 @@
         </div>
         <div class="viewColumnDiv">
             <div id="viewDescriptionKey" class="viewKey">Description</div>
-            <div id="viewDescriptionValue" class="viewValue">{{ location.description }}</div>
+            <div id="viewDescriptionValue" class="viewValue">
+                {% if location.description %}
+                    {{ location.description }}
+                {% else %}
+                    (Not provided)
+                {% endif %}
+            </div>
+            <div  class="viewKey">Ease of Use</div>
+            <div  class="viewValue">
+                {% if location.ease_of_use %}
+                    {{ location.ease_of_use }} / 5 stars
+                {% else %}
+                    (Unrated)
+                {% endif %}
+            </div>
+            <div class="viewKey">Safety</div>
+            <div class="viewValue">
+                {% if location.safety %}
+                    {{ location.safety }} / 5 stars
+                {% else %}
+                    (Unrated)
+                {% endif %}
+            </div>
+            <div class="viewKey">Capacity</div>
+            <div class="viewValue">
+                {% if location.capacity %}
+                    {{ location.capacity }} bikes
+                {% else %}
+                    (Unknown)
+                {% endif %}
+            </div>
         </div>
         <div class="viewColumnDiv">
             <div id="viewPictureKey" class="viewKey">Picture</div>
@@ -57,7 +93,7 @@
                     </a>
                 {% endif %}
                 {% if not location.picture %}
-                    (no picture loaded yet) <!--TODO Add a filler picture to indicate nothing has been loaded -->
+                    (Not provided) <!--TODO Add a filler picture to indicate nothing has been loaded -->
                 {% endif %}
             </div>
         </div>
