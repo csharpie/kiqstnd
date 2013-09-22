@@ -8,12 +8,92 @@
     var rcMap; // init after document is ready
     var points = [];
     var isResultsDivHidden = true;
+    var map;
+    var lat, lng;
+
+    var lastAddedMarker;
 
     /**
      * Initialize the map
      */
     $(document).ready(function () {
         rcMap = RC.map("mapDiv");
+
+		var bikeParkingSpots = [];
+
+        map = rcMap.getLeafletMap();
+
+		map.on('click', function(e) {
+
+	    	lat = e.latlng["lat"];
+	    	lng = e.latlng["lng"];
+
+	    	$("#details-form").dialog("open");
+
+	    	$( "#details-form" ).on( "dialogclose", function( event, ui ) {
+
+		    	}
+	    	);
+		});
+
+
+        var bikeParkingTypes = ["Rack", "Corral", "Design Rack", "Pole", "Tree", "Fence"];
+
+        for (var i = 0; i < bikeParkingTypes.length; i++)
+        {
+            $("#parkingType")
+                .append($("<option></option>")
+                .attr("value", bikeParkingTypes[i])
+                .text(bikeParkingTypes[i]));
+        }
+
+        $("#details-form").dialog({
+            autoOpen: false,
+            modal: true,
+            buttons: {
+                "Ok": function() {
+                    $(this).dialog("close");
+                    var length = bikeParkingSpots.length;
+		    		var id = length + 1;
+
+		    		bikeParkingSpots[length] = {"id": id, "lat": lat, "lng": lng};
+		    		lastAddedMarker = L.marker([lat, lng], {icon: RC.Pins.Parking}).bindPopup(id.toString()).addTo(map);
+
+                    $.post("/services/location", {
+                        latitude: lat,
+                        longitude: lng,
+                        name: $('#name').val(),
+                        description: $('#description').val(),
+                        capacity_type: $('#capacity').val(),
+                        location_type: $('#parkingType').val()
+
+                    });
+
+                    // TODO this is where it should submit the location to the server
+                },
+                "Cancel": function() {
+                    $(this).dialog("close");
+                    // TODO Remove added pin
+                    return false;
+                }
+            }
+        });
+
+        $("#easeOfUse").raty({
+            score: 1,
+            starOn: "/static/images/star-on.png",
+            starOff: "/static/images/star-off.png"
+        });
+
+        $("#safety").raty({
+            score: 1,
+            starOn: "/static/images/star-on.png",
+            starOff: "/static/images/star-off.png"
+        });
+
+
+
+
     });
 
     /**
@@ -225,6 +305,13 @@
 
 
     </script>
+
+    <link rel="stylesheet" href="/static/css/lib/jquery-ui.custom.css" />
+	<link rel="stylesheet" href="/static/css/lib/bootstrap.min.css" />
+    <script type="text/javascript" src="/static/js/lib/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="http://codeorigin.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/static/js/lib/jquery.raty.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -236,7 +323,7 @@
 
         <input id="streetAddressInput" type="text" value=""/>
         <input type="button" onclick="search()" value="Search"/>
-        <input type="button" onclick="findLocations()" value="Add"/>
+        <!--<input type="button" onclick="findLocations()" value="Add"/>-->
         <a id="showHideResultDivLink" class="linkSpan" onclick="showHideResultDiv()">Show/Hide Results Table</a>
     </div>
 
@@ -245,4 +332,36 @@
     </div>
 
     <div id="mapDiv"></div>
+
+	<div id="details-form">
+	    <form>
+	        <label for="name">Name</label>
+	        <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
+	        <br />
+
+            <label for="Description">Description</label>
+	        <input type="text" name="description" id="description" class="text ui-widget-content ui-corner-all" />
+	        <br />
+
+	        <label for="parkingType">Parking Type</label>
+	        <select id="parkingType" name="parkingType" class="combobox"></select>
+	        <br />
+
+	        <label for="easeOfUse">Ease of Use</label>
+	        <div id="easeOfUse"></div>
+	        <br />
+
+	        <label for="safety">Safety</label>
+	        <div id="safety"></div>
+	        <br />
+
+	        <label for="capacity">Capacity</label>
+	        <select id="capacity" name="capacity" class="combobox">
+	        	<option value="1">1 Bike</option>
+	        	<option value="2">2 Bikes</option>
+	        	<option value="more">Even More Bikes</option>
+	        </select>
+	    </form>
+	</div>
+
 {% endblock %}

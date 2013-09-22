@@ -104,22 +104,6 @@ def get_locations_in_radius(request):  # , latitude, longitude, radius=0
 
 @csrf_exempt
 def get_location_by_id(request, id):
-    """
-    TODO pydoc this better
-    Gets a single Location by its database ID column
-
-    Returned, is a GeoJSON Point object with the following properties
-    - id
-    - address
-    - pictures [URL , URL, URL] Up to three URLs
-    - description
-    - lot_type   TODO This is coming back as the DB string, not the descriptive English version -- change that
-
-    Sample request:
-    http://localhost:8000/services/location/123
-
-    ID is validated in urls config, no need to repeat here
-    """
 
     location = LOCATION_SERVICE.get_location(id=id)
     if not location:
@@ -164,7 +148,7 @@ def add_location(request): #, latitude, longitude, lot_type, address=None, pictu
         if not Location.VALID_TYPES.count(location_type):
             return HttpResponseBadRequest('Invalid type parameter. Valid options are: ' + str(Location.VALID_TYPES))
     except KeyError:
-        return HttpResponseBadRequest('Missing type parameter. Valid options are ' + str(Location.VALID_TYPES))
+        location_type = None
 
     # Validate pictures - optional, must be under a certain size limit
     try:
@@ -193,7 +177,7 @@ def add_location(request): #, latitude, longitude, lot_type, address=None, pictu
         if not Location.VALID_CAPACITY_TYPES.count(capacity_type):
             return HttpResponseBadRequest('Invalid type parameter. Valid options are: ' + str(Location.VALID_CAPACITY_TYPES))
     except KeyError:
-        return HttpResponseBadRequest('Missing type parameter. Valid options are ' + str(Location.VALID_CAPACITY_TYPES))
+        capacity_type = None
 
     # Safety
     try:
@@ -213,6 +197,7 @@ def add_location(request): #, latitude, longitude, lot_type, address=None, pictu
         location = LOCATION_SERVICE.add_location(latitude, longitude, name, location_type, picture, description, safety, ease_of_use, capacity_type)
     except Exception as e:
         return HttpResponseServerError('Was unable to add the new location due to an error: %s' % e)
+
     # return the location that was just added
     return get_location_by_id(request, location.id)
 
