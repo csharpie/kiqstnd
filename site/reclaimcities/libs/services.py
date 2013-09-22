@@ -35,7 +35,7 @@ class LocationService():
 
         return locations
 
-    def add_location(self, latitude, longitude, lot_type, address=None, pictures=None, description=None):
+    def add_location(self, latitude, longitude, parking_type, name, picture=None, description=None, safety=None, ease_of_use=None):
         """
         Adds a new Location object to the database
 
@@ -64,7 +64,7 @@ class LocationService():
 
         return new_location
 
-    def update_location(self, id, lot_type=None, address=None, pictures=None, description=None):
+    def update_location(self, id, parking_type=None, name=None, picture=None, description=None, ease_of_use=None, safety=None, capacity_type=None):
         """
         Updates an existing Location object to the database
 

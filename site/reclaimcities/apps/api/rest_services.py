@@ -157,35 +157,20 @@ def add_location(request): #, latitude, longitude, lot_type, address=None, pictu
     except ValueError:
         return HttpResponseBadRequest('Non-numeric longitude parameter')
 
-    # Validate lot_type - required, must be be a valid type
+    # Validate parking_type - required, must be be a valid type
     try:
-        lot_type = request.POST['lot_type']
-        if not Location.VALID_TYPES.count(lot_type):
+        parking_type = request.POST['parking_type']
+        if not Location.VALID_TYPES.count(parking_type):
             return HttpResponseBadRequest('Invalid type parameter. Valid options are: ' + str(Location.VALID_TYPES))
     except KeyError:
         return HttpResponseBadRequest('Missing type parameter. Valid options are ' + str(Location.VALID_TYPES))
 
-    # Validate address - optional, must only have letters, numbers, periods, and dashes
-    address = request.POST.get('address', None)
-    if address and not VALID_ADDRESS_REGEX.match(address):
-        return HttpResponseBadRequest(
-            'Invalid address parameter. Can only contain letters, spaces, numbers, periods, and dashes')
-
     # Validate pictures - optional, must be under a certain size limit
-    # TODO figure out how to do this
     pictures = []
     try:
-        picture1 = request.FILES.get('picture1')
-        picture2 = request.FILES.get('picture2')
-        picture3 = request.FILES.get('picture3')
-        if picture1:
-            pictures.append(picture1)
-        if picture2:
-            pictures.append(picture2)
-        if picture3:
-            pictures.append(picture3)
+        picture = request.FILES.get('picture')
     except KeyError:
-        pictures = []
+        picture = None
 
     # Validate description - optional; limit to 200 characters; only letters, numbers, common punctuation, dashes
     try:
@@ -196,9 +181,37 @@ def add_location(request): #, latitude, longitude, lot_type, address=None, pictu
     except KeyError:
         description = None
 
+    # Name -- do validation later
+    try:
+        name = request.POST['name']
+    except KeyError:
+        return HttpResponseBadRequest('Missing name parameter.')
+
+    # Validate parking_type - required, must be be a valid type
+    try:
+        capacity_type = request.POST['capacity_type']
+        if not Location.VALID_CAPACITY_TYPES.count(capacity_type):
+            return HttpResponseBadRequest('Invalid type parameter. Valid options are: ' + str(Location.VALID_CAPACITY_TYPES))
+    except KeyError:
+        return HttpResponseBadRequest('Missing type parameter. Valid options are ' + str(Location.VALID_CAPACITY_TYPES))
+
+    # Safety
+    try:
+        safety = request.POST['safety']
+    except KeyError:
+        safety = None
+
+
+    # Ease of Use
+    try:
+        ease_of_use = request.POST['ease_of_use']
+    except KeyError:
+        ease_of_use = None
+
+
     # Add the location
     try:
-        location = LOCATION_SERVICE.add_location(latitude, longitude, lot_type, address, pictures, description)
+        location = LOCATION_SERVICE.add_location(latitude, longitude, parking_type, name, picture, description, safety, ease_of_use)
     except Exception as e:
         return HttpResponseServerError('Was unable to add the new location due to an error: %s' % e)
 
@@ -216,37 +229,45 @@ def update_location(request, id): # lot_type=None, address=None, pictures=None, 
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    # Validate lot_type - required, must be be a valid type
+    # Validate parking_type - required, must be be a valid type
     try:
-        lot_type = request.POST['lot_type']
-        if not Location.VALID_TYPES.count(lot_type):
+        parking_type = request.POST['parking_type']
+        if not Location.VALID_TYPES.count(parking_type):
             return HttpResponseBadRequest('Invalid type parameter. Valid options are: ' + str(Location.VALID_TYPES))
     except KeyError:
-        lot_type = None
+        parking_type = None
 
-    # Validate address - optional, must only have letters, numbers, periods, and dashes
+    # Validate parking_type - required, must be be a valid type
     try:
-        address = request.POST.get('address', None)
-        if address and not VALID_ADDRESS_REGEX.match(address):
-            return HttpResponseBadRequest(
-                'Invalid address parameter. Can only contain letters, numbers, periods, spaces, and dashes')
+        capacity_type = request.POST['capacity_type']
+        if not Location.VALID_CAPACITY_TYPES.count(capacity_type):
+            return HttpResponseBadRequest('Invalid type parameter. Valid options are: ' + str(Location.VALID_CAPACITY_TYPES))
     except KeyError:
-        address = None
+        capacity_type = None
+
+    # Validate name
+    try:
+        name = request.POST.get('name', None)
+    except KeyError:
+        name = None
 
     # Validate pictures - optional, must be under a certain size limit
-    pictures = []
     try:
-        picture1 = request.FILES.get('picture1')
-        picture2 = request.FILES.get('picture2')
-        picture3 = request.FILES.get('picture3')
-        if picture1:
-            pictures.append(picture1)
-        if picture2:
-            pictures.append(picture2)
-        if picture3:
-            pictures.append(picture3)
+        picture = request.FILES.get('picture')
     except KeyError:
-        pictures = []
+        picture = None
+
+    # Ease of Use
+    try:
+        ease_of_use = request.POST.get('ease_of_use')
+    except KeyError:
+        ease_of_use = None
+
+    # Safety
+    try:
+        safety = request.POST.get('safety')
+    except KeyError:
+        safety = None
 
     # Validate description - optional; limit to 200 characters; only letters, numbers, common punctuation, dashes
     try:
@@ -259,7 +280,7 @@ def update_location(request, id): # lot_type=None, address=None, pictures=None, 
 
     # Add the location
     try:
-        location = LOCATION_SERVICE.update_location(id=id, lot_type=lot_type, address=address, pictures=pictures, description=description)
+        location = LOCATION_SERVICE.update_location(id=id, parking_type=parking_type, name=name, picture=picture, description=description, ease_of_use=ease_of_use, safety=safety)
     except Exception as e:
         return HttpResponseServerError('Was unable to add the new location due to an error: ' + e.message)
 
