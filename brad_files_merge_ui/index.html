@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+	<!--[if lte IE 8]>
+	    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+	<![endif]-->
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+	<style>
+		#map {
+			height: 500px;
+			width: 650px;
+		}
+
+		#areYouSerious {
+			color: red;
+		}
+
+		#Grid .mix{
+		    opacity: 0;
+		    display: none;
+		}
+
+		#slider {
+			width: 250px;
+		}
+	</style>
+	
+</head>
+<body>
+	<div id="Grid">
+		 <label for="parkingSpots">Parking Spots</label>
+			<select name="parkingSpots" id="parkingSpots">
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+				<option>5</option>
+				<option>6</option>
+				<option>7</option>
+				<option>8</option>
+				<option>9</option>
+				<option>10</option>
+				<option>11</option>
+				<option>12</option>
+				<option>13</option>
+				<option>14</option>
+				<option>15</option>
+				<option>16</option>
+				<option>17</option>
+				<option>18</option>
+				<option>19</option>
+				<option>20</option>
+			</select>
+	</div>
+
+	<br />
+
+	<div id="map">
+	</div>
+
+	<div id="details-form">
+	    <form>
+	        <label for="name">Name</label>
+	        <input type="text" name="name" id="txt2" class="text ui-widget-content ui-corner-all" />
+	        <br />
+	        
+	        <label for="latlong">Coordinates</label>
+	        <label id="latlng"></label>
+	        <br/>
+
+	        <label for="parkingType">Parking Type</label>
+	        <select id="parkingType" name="parkingType" class="combobox"></select>
+	        <br />
+
+	        <label for="easeOfUse">Ease of Use</label>
+	        <div id="easeOfUse"></div>
+	        <br />
+
+	        <label for="safety">Safety</label>
+	        <div id="safety"></div>
+	        <br />
+
+	        <label for="capacity">Capacity</label>
+	        <select id="capacity" name="capacity" class="combobox">
+	        	<option value="1">1 Bike</option>
+	        	<option value="2">2 Bikes</option>
+	        	<option value="3">Even More Bikes</option>
+	        </select>
+	        
+	        <label id="areYouSerious"><strong>Are you serious?!?</strong></label>
+	        <br />
+	    </form>
+	</div>
+
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="http://codeorigin.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="lib/jquery.raty.min.js"></script>
+	<script type="text/javascript" src="jquery.mixitup.js"></script>
+	<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+	<script type="text/javascript">
+		var bikeTheft = L.layerGroup();
+		var map = L.map("map", function(){
+			layers : [ parking ]
+		});
+		var bikeParkingTypes = ["Rack", "Corral", "Caroussel", "Pole", "Tree"];
+		var newBikeParking;
+		var lat, lng;
+		
+
+		$(document).ready(function() {
+			$('#Grid').mixitup();
+
+			var select = $( "#parkingSpots" );
+			var slider = $( "<div id='slider'></div>" ).insertAfter( select ).slider({
+				min: 1,
+				max: 20,
+				range: "min",
+				value: select[ 0 ].selectedIndex + 1,
+				slide: function( event, ui ) {
+					select[ 0 ].selectedIndex = ui.value - 1;
+				}
+			});
+			$( "#parkingSpots" ).change(function() {
+				slider.slider( "value", this.selectedIndex + 1 );
+			});
+
+			map.setView([39.9522, -75.1642], 15);
+
+			L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+			    maxZoom: 18
+			}).addTo(map);
+
+			map.on('click', function(e) {
+		    	lat = e.latlng["lat"];
+		    	lng = e.latlng["lng"];
+
+		    	$("#details-form").dialog("open");
+		    	$("#latlng").text(e.latlng);
+
+		    	$( "#details-form" ).on( "dialogclose", function( event, ui ) {
+			    		L.marker([lat, lng]).addTo(map);
+			    	}
+		    	);
+			});
+
+
+
+			var baseMaps = {
+			    "Bike Theft": bikeTheft,
+			    "Default": L.layerGroup()
+			};
+
+			L.control.layers(baseMaps).addTo(map);
+
+			for (var i = 0; i < bikeParkingTypes.length; i++)
+			{
+				$("#parkingType")
+					.append($("<option></option>")
+			        .attr("value", bikeParkingTypes[i])
+			        .text(bikeParkingTypes[i]));
+			}
+
+			$("#details-form").dialog({
+		        autoOpen: false,
+		        modal: true,
+		        buttons: {
+		            "Ok": function() {
+		                var text1 = $("#txt1");
+		                var text2 = $("#txt2");
+		                //Do your code here
+		                text1.val(text2.val().substr(1,9));
+		                $(this).dialog("close");
+		            },
+		            "Cancel": function() {
+		                $(this).dialog("close");
+		            }
+		        }
+		    });
+
+			$("#areYouSerious").hide();
+
+		    $("#easeOfUse").raty({
+		    	score: 0,
+		    	starOn: "lib/img/star-on.png",
+    			starOff: "lib/img/star-off.png"
+		    });
+
+		    $("#safety").raty({
+		    	score: 0,
+		    	starOn: "lib/img/star-on.png",
+    			starOff: "lib/img/star-off.png"
+		    });
+		});
+
+	</script>
+</body>
+</html>
