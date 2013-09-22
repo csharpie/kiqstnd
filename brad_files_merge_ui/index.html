@@ -7,26 +7,39 @@
 	    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
 	<![endif]-->
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-	<style>
-		#map {
-			height: 500px;
-			width: 650px;
-		}
-
-		#areYouSerious {
-			color: red;
-		}
-
-		#slider {
-			width: 250px;
-		}
-	</style>
+	<link rel="stylesheet" href="css/style.css" />
 	
 </head>
 <body>
 	<div id="Grid">
 		 <label for="parkingSpots">Parking Spots</label>
 			<select name="parkingSpots" id="parkingSpots">
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+				<option>5</option>
+				<option>6</option>
+				<option>7</option>
+				<option>8</option>
+				<option>9</option>
+				<option>10</option>
+				<option>11</option>
+				<option>12</option>
+				<option>13</option>
+				<option>14</option>
+				<option>15</option>
+				<option>16</option>
+				<option>17</option>
+				<option>18</option>
+				<option>19</option>
+				<option>20</option>
+			</select>
+
+		<br />
+
+		<label for="stolenBikeLocations">Stolen Bike Locations</label>
+			<select name="stolenBikeLocations" id="stolenBikeLocations">
 				<option>1</option>
 				<option>2</option>
 				<option>3</option>
@@ -83,15 +96,12 @@
 	        	<option value="2">2 Bikes</option>
 	        	<option value="3">Even More Bikes</option>
 	        </select>
-	        
-	        <label id="areYouSerious"><strong>Are you serious?!?</strong></label>
-	        <br />
 	    </form>
 	</div>
 
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="http://codeorigin.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="lib/jquery.raty.min.js"></script>
+	<script type="text/javascript" src="js/lib/jquery.raty.min.js"></script>
 	<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
 	<script type="text/javascript">
 		var bikeTheft = L.layerGroup();
@@ -101,23 +111,38 @@
 		var bikeParkingTypes = ["Rack", "Corral", "Caroussel", "Pole", "Tree"];
 		var newBikeParking;
 		var lat, lng;
+
+		var bikeParkingSpots = [];
 		
 
 		$(document).ready(function() {
-			$('#Grid').mixitup();
-
-			var select = $( "#parkingSpots" );
-			var slider = $( "<div id='slider'></div>" ).insertAfter( select ).slider({
+			var parkingSpotsSelect = $( "#parkingSpots" );
+			var stolenBikeLocationsSelect = $( "#stolenBikeLocations" );
+			var parkingSpotsSlider = $( "<div id='parkingSpotsSlider'></div>" ).insertAfter( parkingSpotsSelect ).slider({
 				min: 1,
 				max: 20,
 				range: "min",
-				value: select[ 0 ].selectedIndex + 1,
+				value: parkingSpotsSelect[ 0 ].selectedIndex + 1,
 				slide: function( event, ui ) {
-					select[ 0 ].selectedIndex = ui.value - 1;
+					parkingSpotsSelect[ 0 ].selectedIndex = ui.value - 1;
 				}
 			});
+			var stolenBikeLocationsSlider = $( "<div id='stolenBikeLocationsSlider'></div>" ).insertAfter( stolenBikeLocationsSelect ).slider({
+				min: 1,
+				max: 20,
+				range: "min",
+				value: stolenBikeLocationsSelect[ 0 ].selectedIndex + 1,
+				slide: function( event, ui ) {
+					stolenBikeLocationsSelect[ 0 ].selectedIndex = ui.value - 1;
+				}
+			});
+
 			$( "#parkingSpots" ).change(function() {
-				slider.slider( "value", this.selectedIndex + 1 );
+				parkingSpotsSlider.slider( "value", this.selectedIndex + 1 );
+			});
+
+			$( "#stolenBikeLocations" ).change(function() {
+				stolenBikeLocationsSlider.slider( "value", this.selectedIndex + 1 );
 			});
 
 			map.setView([39.9522, -75.1642], 15);
@@ -135,7 +160,17 @@
 		    	$("#latlng").text(e.latlng);
 
 		    	$( "#details-form" ).on( "dialogclose", function( event, ui ) {
-			    		L.marker([lat, lng]).addTo(map);
+			    		var id = bikeParkingSpots.length + 1;
+			    		bikeParkingSpots.push({"id": id, "lat": lat, "lng": lng});
+			    		L.marker([lat, lng]).bindPopup(id.toString()).addTo(map);
+
+			    		alert(bikeParkingSpots.length);
+
+			    		if (bikeParkingSpots.length > 20) {
+			    			var marker = L.marker([bikeParkingSpots[0].lat, bikeParkingSpots[1].lng]);
+			    			bikeParkingSpots.splice(0, 1);
+			    			map.removeLayer(marker)
+			    		}
 			    	}
 		    	);
 			});
@@ -174,18 +209,16 @@
 		        }
 		    });
 
-			$("#areYouSerious").hide();
-
 		    $("#easeOfUse").raty({
 		    	score: 0,
-		    	starOn: "lib/img/star-on.png",
-    			starOff: "lib/img/star-off.png"
+		    	starOn: "img/lib/star-on.png",
+    			starOff: "img/lib/star-off.png"
 		    });
 
 		    $("#safety").raty({
 		    	score: 0,
-		    	starOn: "lib/img/star-on.png",
-    			starOff: "lib/img/star-off.png"
+		    	starOn: "img/lib/star-on.png",
+    			starOff: "img/lib/star-off.png"
 		    });
 		});
 
