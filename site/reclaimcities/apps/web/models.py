@@ -24,7 +24,7 @@ class Location(models.Model):
                         ("fence", "Fence"),
                         ("bush", "Burning Bush")
     )
-    parking_type = models.CharField(max_length="10", choices=LOCATION_TYPES, blank=True, null=True)
+    location_type = models.CharField(max_length="10", choices=LOCATION_TYPES, blank=True, null=True)
 
     # Description
     description = models.CharField(max_length="200", blank=True, null=True)
