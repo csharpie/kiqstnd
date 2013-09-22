@@ -201,7 +201,7 @@ def add_location(request): #, latitude, longitude, lot_type, address=None, pictu
         location = LOCATION_SERVICE.add_location(latitude, longitude, lot_type, address, pictures, description)
     except Exception as e:
         return HttpResponseServerError('Was unable to add the new location due to an error: %s' % e)
-
+)
     # return the location that was just added
     return get_location_by_id(request, location.id)
 
@@ -309,3 +309,38 @@ def geocode(request, streetAddress):
         geocodeCache.save()
 
     return json_response(points)
+
+@csrf_exempt
+def load_file(request):
+
+    LOAD_URLS = ['http://gis.phila.gov/ArcGIS/rest/services/Streets/Bike_Racks/MapServer/1/query?text=&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22rings%22%3A%5B%5B%5B-75.18733978271484%2C39.95422755797634%5D%2C%5B-75.13446807861328%2C39.95106936461956%5D%2C%5B-75.13652801513672%2C39.92448212528485%5D%2C%5B-75.12931823730467%2C39.905259175197614%5D%2C%5B-75.14305114746094%2C39.88365983864681%5D%2C%5B-75.19351959228516%2C39.88207913214082%5D%2C%5B-75.22064208984375%2C39.92764154592116%5D%2C%5B-75.18733978271484%2C39.95422755797634%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&objectIds=&where=1%3D1&time=&returnCountOnly=false&returnIdsOnly=false&returnGeometry=true&maxAllowableOffset=&outSR=&outFields=*&f=pjson',
+                'http://gis.phila.gov/ArcGIS/rest/services/Streets/Bike_Racks/MapServer/1/query?text=&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22rings%22%3A%5B%5B%5B-75.18733978271484%2C39.95422755797634%5D%2C%5B-75.13446807861328%2C39.95106936461956%5D%2C%5B-75.0864028930664%2C39.97659391922923%5D%2C%5B-75.05413055419922%2C40.004212850519885%5D%2C%5B-75.05207061767578%2C40.024985445869156%5D%2C%5B-75.20793914794922%2C40.02261926678969%5D%2C%5B-75.20622253417969%2C39.98264473554439%5D%2C%5B-75.18630981445312%2C39.95291166179976%5D%5D%5D%7D%0D%0A&geometryType=esriGeometryPolygon&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&objectIds=&where=1%3D1&time=&returnCountOnly=false&returnIdsOnly=false&returnGeometry=true&maxAllowableOffset=&outSR=&outFields=*&f=pjson']
+
+    location_list = []
+
+    for load_url in LOAD_URLS:
+        
+        in_file = requests.get(load_url)
+
+        if in_file.status != 200:
+            return HttpResponseBadRequest("HTTP request failed - status code %d" % in_file.status)
+
+        in_json = in_file.json()
+
+        points_list = in_json["features"]
+
+        for point in points_list:
+            geometry = point["geometry"]
+            attributes = point["attributes"]
+
+            x = geometry["x"]
+            y = geometry["y"]
+            name = attributes["location"]
+
+            newLocation = Location(latitude=y, longitude=x, name=name)
+
+            location_list.append(newLocation)
+
+    Location.objects.bulk_create(location_list)
+
+    return HttpResponse("Load OK")
