@@ -24,11 +24,24 @@ class Location(models.Model):
                         ("fence", "Fence"),
                         ("bush", "Burning Bush")
     )
-    parking_type = models.CharField(max_length="3", choices=LOCATION_TYPES)
+    parking_type = models.CharField(max_length="10", choices=LOCATION_TYPES)
 
     # Description
     description = models.CharField(max_length="200", blank=True, null=True)
     picture = models.ImageField(upload_to="images/locations", blank=True, null=True)
+
+    ease_of_use = models.IntegerField()
+    safety = models.IntegerField()
+
+    # Capacity
+    VALID_CAPACITY_TYPES = ("1", "2", "more")
+    CAPACITY_TYPES = (  
+                        ("1", "1 Bikes"),
+                        ("2", "2 Bikes"),
+                        ("more", "More than 2 Bikes")
+    )
+    parking_type = models.CharField(max_length="4", choices=CAPACITY_TYPES)
+
 
     def __unicode__(self):
         return "(" + str(self.id) + ") Latitude: " + str(self.latitude) + ", " + "Longitude: " + str(self.longitude)
