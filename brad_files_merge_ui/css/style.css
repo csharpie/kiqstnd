@@ -3,6 +3,17 @@
 	width: 650px;
 }
 
+.map-key {
+    float: right;
+    font-family: Helvetica,Arial,sans-serif;
+    margin: 2em 0;
+    width: 33%;
+}
+
+ol, ul {
+    list-style: none outside none;
+}
+
 #parkingSpotsSlider {
 	width: 250px;
 }

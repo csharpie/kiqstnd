@@ -6,13 +6,18 @@
 	<!--[if lte IE 8]>
 	    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
 	<![endif]-->
-	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+	<link rel="stylesheet" href="css/lib/jquery-ui.custom.css" />
+	<link rel="stylesheet" href="css/lib/bootstrap.min.css" />
 	<link rel="stylesheet" href="css/style.css" />
 	
 </head>
 <body>
-	<div id="Grid">
-		 <label for="parkingSpots">Parking Spots</label>
+	<div id="map">
+	</div>
+
+	<div class="key">
+		<form action="#">
+			<label for="parkingSpots">Parking Spots</label>
 			<select name="parkingSpots" id="parkingSpots">
 				<option>1</option>
 				<option>2</option>
@@ -61,22 +66,19 @@
 				<option>19</option>
 				<option>20</option>
 			</select>
-	</div>
 
-	<br />
-
-	<div id="map">
+			<ul class="map-key">
+				<li><img src="img/lib/parking-bicycle.png" alt="icon"> <input id="parkingCheck" type="checkbox"> Parking</li>
+				<li><img src="img/lib/theft.png" alt="icon"> <input id="theftCheck" type="checkbox"> Thefts</li>
+			</ul>
+	 	</form>
 	</div>
 
 	<div id="details-form">
 	    <form>
-	        <label for="name">Name</label>
-	        <input type="text" name="name" id="txt2" class="text ui-widget-content ui-corner-all" />
+	        <label for="streetName">Street Name</label>
+	        <input type="text" name="streetName" id="streetName" class="text ui-widget-content ui-corner-all" />
 	        <br />
-	        
-	        <label for="latlong">Coordinates</label>
-	        <label id="latlng"></label>
-	        <br/>
 
 	        <label for="parkingType">Parking Type</label>
 	        <select id="parkingType" name="parkingType" class="combobox"></select>
@@ -103,125 +105,41 @@
 	<script type="text/javascript" src="http://codeorigin.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="js/lib/jquery.raty.min.js"></script>
 	<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+	<script type="text/javascript" src="js/lib/bootstrap.min"></script>
+	<script type="text/javascript" src="js/initialize.js"></script>
+	<script type="text/javascript" src="js/map.js"></script>
 	<script type="text/javascript">
-		var bikeTheft = L.layerGroup();
-		var map = L.map("map", function(){
-			layers : [ parking ]
-		});
-		var bikeParkingTypes = ["Rack", "Corral", "Caroussel", "Pole", "Tree"];
-		var newBikeParking;
 		var lat, lng;
-
 		var bikeParkingSpots = [];
+
+
 		
-
-		$(document).ready(function() {
-			var parkingSpotsSelect = $( "#parkingSpots" );
-			var stolenBikeLocationsSelect = $( "#stolenBikeLocations" );
-			var parkingSpotsSlider = $( "<div id='parkingSpotsSlider'></div>" ).insertAfter( parkingSpotsSelect ).slider({
-				min: 1,
-				max: 20,
-				range: "min",
-				value: parkingSpotsSelect[ 0 ].selectedIndex + 1,
-				slide: function( event, ui ) {
-					parkingSpotsSelect[ 0 ].selectedIndex = ui.value - 1;
-				}
-			});
-			var stolenBikeLocationsSlider = $( "<div id='stolenBikeLocationsSlider'></div>" ).insertAfter( stolenBikeLocationsSelect ).slider({
-				min: 1,
-				max: 20,
-				range: "min",
-				value: stolenBikeLocationsSelect[ 0 ].selectedIndex + 1,
-				slide: function( event, ui ) {
-					stolenBikeLocationsSelect[ 0 ].selectedIndex = ui.value - 1;
-				}
-			});
-
-			$( "#parkingSpots" ).change(function() {
-				parkingSpotsSlider.slider( "value", this.selectedIndex + 1 );
-			});
-
-			$( "#stolenBikeLocations" ).change(function() {
-				stolenBikeLocationsSlider.slider( "value", this.selectedIndex + 1 );
-			});
-
-			map.setView([39.9522, -75.1642], 15);
-
-			L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-			    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-			    maxZoom: 18
-			}).addTo(map);
-
-			map.on('click', function(e) {
-		    	lat = e.latlng["lat"];
-		    	lng = e.latlng["lng"];
-
-		    	$("#details-form").dialog("open");
-		    	$("#latlng").text(e.latlng);
-
-		    	$( "#details-form" ).on( "dialogclose", function( event, ui ) {
-			    		var id = bikeParkingSpots.length + 1;
-			    		bikeParkingSpots.push({"id": id, "lat": lat, "lng": lng});
-			    		L.marker([lat, lng]).bindPopup(id.toString()).addTo(map);
-
-			    		alert(bikeParkingSpots.length);
-
-			    		if (bikeParkingSpots.length > 20) {
-			    			var marker = L.marker([bikeParkingSpots[0].lat, bikeParkingSpots[1].lng]);
-			    			bikeParkingSpots.splice(0, 1);
-			    			map.removeLayer(marker)
-			    		}
-			    	}
-		    	);
-			});
+		map.on('click', function(e) {
 
 
 
-			var baseMaps = {
-			    "Bike Theft": bikeTheft,
-			    "Default": L.layerGroup()
-			};
+	    	lat = e.latlng["lat"];
+	    	lng = e.latlng["lng"];
 
-			L.control.layers(baseMaps).addTo(map);
+	    	$("#details-form").dialog("open");
+	    	
+	    	$( "#details-form" ).on( "dialogclose", function( event, ui ) {
+		    		var length = bikeParkingSpots.length;
+		    		var id = length + 1;
 
-			for (var i = 0; i < bikeParkingTypes.length; i++)
-			{
-				$("#parkingType")
-					.append($("<option></option>")
-			        .attr("value", bikeParkingTypes[i])
-			        .text(bikeParkingTypes[i]));
-			}
+		    		L.marker([39.9522, -75.1642], {icon: bikeTheftIcon}).bindPopup(id.toString()).addTo(map);
 
-			$("#details-form").dialog({
-		        autoOpen: false,
-		        modal: true,
-		        buttons: {
-		            "Ok": function() {
-		                var text1 = $("#txt1");
-		                var text2 = $("#txt2");
-		                //Do your code here
-		                text1.val(text2.val().substr(1,9));
-		                $(this).dialog("close");
-		            },
-		            "Cancel": function() {
-		                $(this).dialog("close");
-		            }
-		        }
-		    });
+		    		bikeParkingSpots[length] = {"id": id, "lat": lat, "lng": lng};
+		    		L.marker([lat, lng], {icon: bikeParkingIcon}).bindPopup(id.toString()).addTo(map);
 
-		    $("#easeOfUse").raty({
-		    	score: 0,
-		    	starOn: "img/lib/star-on.png",
-    			starOff: "img/lib/star-off.png"
-		    });
-
-		    $("#safety").raty({
-		    	score: 0,
-		    	starOn: "img/lib/star-on.png",
-    			starOff: "img/lib/star-off.png"
-		    });
-		});
-
+		    		if (bikeParkingSpots.length > 5) {
+		    			var marker = L.marker([bikeParkingSpots[0].lat, bikeParkingSpots[1].lng]);
+		    			bikeParkingSpots.splice(0, 1);
+		    			map.removeLayer(marker)
+		    		}
+		    	}
+	    	);
+		});	
 	</script>
 </body>
 </html>
