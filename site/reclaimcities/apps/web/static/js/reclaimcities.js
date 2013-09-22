@@ -17,8 +17,8 @@
 // Reclaim Cities object
 //TODO externalize settings (don't forget about the geocoder)
 var RC = {
-//    TILE_SET_URL: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    TILE_SET_URL: "http://tile.stamen.com/toner/{z}/{x}/{y}.png",
+    TILE_SET_URL: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+//    TILE_SET_URL: "http://tile.stamen.com/toner/{z}/{x}/{y}.png",
     CITY: "Philadelphia",
     STATE: "PA",
     COUNTRY: "USA",

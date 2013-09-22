@@ -44,27 +44,19 @@ class LocationService():
         new_location = Location()
         new_location.latitude = latitude
         new_location.longitude = longitude
-        new_location.address = address
-        new_location.lot_type = lot_type
+        new_location.name = name
+        new_location.location_type = location_type
+        new_location.picture = picture
         new_location.description = description
-
-        # Validate the picture to make sure it's not a malicious file
-        try:
-            if pictures:
-                i = 1
-                for picture in pictures[:3]:
-                    setattr(new_location, "picture%i" % i, ImageField().clean(picture))
-                    i += 1
-        except ValidationError as ve:
-            e = Exception(self)
-            e.message = '; '.join(ve.messages)
-            raise e
+        new_location.safety = safety
+        new_location.ease_of_use = ease_of_use
+        new_location.capacity_type = capacity_type
 
         new_location.save()
 
         return new_location
 
-    def update_location(self, id, parking_type=None, name=None, picture=None, description=None, ease_of_use=None, safety=None, capacity_type=None):
+    def update_location(self, id, location_type=None, name=None, picture=None, description=None, ease_of_use=None, safety=None, capacity_type=None):
         """
         Updates an existing Location object to the database
 
@@ -80,30 +72,33 @@ class LocationService():
             e.message = "Location with that ID not found"
             raise e
 
-
-        if lot_type:
-            location.lot_type = lot_type
+        if location_type:
+            location.location_type = location_type
             updated = True
 
-        if address:
-            location.address = address
+        if name:
+            location.name = name
             updated = True
 
         if description:
             location.description = description
             updated = True
 
-        try:
-            if pictures:
-                i = 1
-                for picture in pictures[:3]:
-                    setattr(location, "picture%i" % i, ImageField.clean(picture))
-                    i += 1
-                updated = True
-        except ValidationError as ve:
-            e = Exception(self)
-            e.message = '; '.join(ve.messages)
-            raise e
+        if picture:
+            location.picture = picture
+            updated = True
+
+        if ease_of_use:
+            location.ease_of_use = ease_of_use
+            updated = True
+
+        if safety:
+            location.safety = safety
+            updated = True
+
+        if capacity_type:
+            location.capacity_type = capacity_type
+            updated = True
 
         if updated:
             location.save()

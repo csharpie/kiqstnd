@@ -17,19 +17,32 @@ def location_to_point(location):
         "coordinates": [location.latitude, location.longitude],
         "properties": {
             "id": location.id,
-            "lot_type": location.lot_type
         }
     }
 
-    if location.address:
-        point["properties"]["address"] = location.address
+    if location.name:
+        point["properties"]["name"] = location.name
 
     if location.description:
         point["properties"]["description"] = location.description
 
-    point["properties"]["pictures"] = location.pictures
+    if location.location_type:
+        point["properties"]["location_type"] = location.location_type
+
+    if location.ease_of_use:
+        point["properties"]["ease_of_use"] = location.ease_of_use
+
+    if location.safety:
+        point["properties"]["safety"] = location.safety
+
+    if location.capacity_type:
+        point["properties"]["capacity_type"] = location.capacity_type
+
+    if location.picture:
+        point["properties"]["picture"] = location.picture
 
     return point
+
 
 def locations_to_points(locations):
     points = []

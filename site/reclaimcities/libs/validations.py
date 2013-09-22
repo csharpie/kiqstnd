@@ -11,11 +11,3 @@ def is_number(anObject):
         return True
     except:
         return False
-       
-def is_street_address(anObject):
-	try:
-		if re.match("^[\w\s,.-]*$", anObject):
-			return True
-		return False
-	except:
-		return False
