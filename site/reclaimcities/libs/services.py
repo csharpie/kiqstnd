@@ -35,7 +35,7 @@ class LocationService():
 
         return locations
 
-    def add_location(self, latitude, longitude, parking_type, name, picture=None, description=None, safety=None, ease_of_use=None):
+    def add_location(self, latitude, longitude, name, location_type=None, picture=None, description=None, safety=None, ease_of_use=None, capacity_type=None):
         """
         Adds a new Location object to the database
 

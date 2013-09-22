@@ -29,6 +29,7 @@ VALID_LOCATION_ID_REGEX = re.compile('^\d+$')
 VALID_ADDRESS_REGEX = re.compile('^(\w|\.|\s|-)+$')
 VALID_DESCRIPTION_REGEX = re.compile('^(\w|\.|\s|-|!|\?|\')+$')
 
+
 def json_response(response_obj):
     """
     TODO document
@@ -44,7 +45,7 @@ def json_response(response_obj):
 
 
 @csrf_exempt
-def get_locations_in_radius(request): # , latitude, longitude, radius=0
+def get_locations_in_radius(request):  # , latitude, longitude, radius=0
     """
     TODO pydoc this better
     Gets a list of locations_dict within a given mile radius.
@@ -157,16 +158,15 @@ def add_location(request): #, latitude, longitude, lot_type, address=None, pictu
     except ValueError:
         return HttpResponseBadRequest('Non-numeric longitude parameter')
 
-    # Validate parking_type - required, must be be a valid type
+    # Validate location_type - required, must be be a valid type
     try:
-        parking_type = request.POST['parking_type']
-        if not Location.VALID_TYPES.count(parking_type):
+        location_type = request.POST['location_type']
+        if not Location.VALID_TYPES.count(location_type):
             return HttpResponseBadRequest('Invalid type parameter. Valid options are: ' + str(Location.VALID_TYPES))
     except KeyError:
         return HttpResponseBadRequest('Missing type parameter. Valid options are ' + str(Location.VALID_TYPES))
 
     # Validate pictures - optional, must be under a certain size limit
-    pictures = []
     try:
         picture = request.FILES.get('picture')
     except KeyError:
@@ -187,7 +187,7 @@ def add_location(request): #, latitude, longitude, lot_type, address=None, pictu
     except KeyError:
         return HttpResponseBadRequest('Missing name parameter.')
 
-    # Validate parking_type - required, must be be a valid type
+    # Validate location_type - required, must be be a valid type
     try:
         capacity_type = request.POST['capacity_type']
         if not Location.VALID_CAPACITY_TYPES.count(capacity_type):
@@ -208,13 +208,11 @@ def add_location(request): #, latitude, longitude, lot_type, address=None, pictu
     except KeyError:
         ease_of_use = None
 
-
     # Add the location
     try:
-        location = LOCATION_SERVICE.add_location(latitude, longitude, parking_type, name, picture, description, safety, ease_of_use)
+        location = LOCATION_SERVICE.add_location(latitude, longitude, name, location_type, picture, description, safety, ease_of_use, capacity_type)
     except Exception as e:
         return HttpResponseServerError('Was unable to add the new location due to an error: %s' % e)
-)
     # return the location that was just added
     return get_location_by_id(request, location.id)
 
@@ -229,15 +227,15 @@ def update_location(request, id): # lot_type=None, address=None, pictures=None, 
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    # Validate parking_type - required, must be be a valid type
+    # Validate location_type - required, must be be a valid type
     try:
-        parking_type = request.POST['parking_type']
-        if not Location.VALID_TYPES.count(parking_type):
+        location_type = request.POST['location_type']
+        if not Location.VALID_TYPES.count(location_type):
             return HttpResponseBadRequest('Invalid type parameter. Valid options are: ' + str(Location.VALID_TYPES))
     except KeyError:
-        parking_type = None
+        location_type = None
 
-    # Validate parking_type - required, must be be a valid type
+    # Validate location_type - required, must be be a valid type
     try:
         capacity_type = request.POST['capacity_type']
         if not Location.VALID_CAPACITY_TYPES.count(capacity_type):
@@ -280,7 +278,7 @@ def update_location(request, id): # lot_type=None, address=None, pictures=None, 
 
     # Add the location
     try:
-        location = LOCATION_SERVICE.update_location(id=id, parking_type=parking_type, name=name, picture=picture, description=description, ease_of_use=ease_of_use, safety=safety)
+        location = LOCATION_SERVICE.update_location(id=id, location_type=location_type, name=name, picture=picture, description=description, ease_of_use=ease_of_use, safety=safety, capacity_type=capacity_type)
     except Exception as e:
         return HttpResponseServerError('Was unable to add the new location due to an error: ' + e.message)
 
