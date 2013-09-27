@@ -41,10 +41,10 @@ body a:hover, .clickableText:hover {
     display: block;
     text-align: center;
 
-    border-top-style: solid;
-    border-top-color: #67564C;
+    background-color: yellow;
+    color: black;
 
-    border-bottom-color: #62B6A9;
+    border-bottom-color: #black;
     border-bottom-style: solid;
 }
 

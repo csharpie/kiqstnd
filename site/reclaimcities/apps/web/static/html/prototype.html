@@ -1,0 +1,70 @@
+<html>
+
+<head>
+    <title>Kiqstand Prototype Info</title>
+
+</head>
+<body>
+<p>
+    Kiqstnd is a prototype bike parking locator for use in
+    City of Philadelphia! The entire version of this app was developed in a little over 12 hours -- which means
+    that it's very rough and not ready for primetime.
+    It was made to demostrate
+    the possiblity of making a bike parking locator that uses real data provided by the City. Not only
+    does it allow a user to search for bike parking locations, it also shows them thefts that have happened
+    nearby a specific location. The other feature is to give users the ability to add
+    bike parking locations themselves (think crowd sourcing).
+</p>
+
+<p>Search Instructions (and viewing theft data):</p>
+<ol>
+    <li>Start on the main [search] page</li>
+    <li>Enter a Philadelphia-based address into the search box</li>
+    <li>Click the Search button</li>
+    <li>View the bike parking locations on the map</li>
+    <li>Click on a map pin</li>
+    <li>In the bubble that appears, click View Details</li>
+    <li>The page that comes up shows theft locations on the map, as well as more details about the parking space</li>
+</ol>
+
+<p>Add Parking Instructions:</p>
+<ol>
+    <li>Start on the main [search] page</li>
+    <li>Click on the map</li>
+    <li>Fill out the form (not all of the fields will currently be saved)</li>
+    <li>Click Ok</li>
+    <li>Note: A pin will be placed, but as of right now, you'll have to refresh the page and search for the location again to access the View Details link on its bubble</li>
+</ol>
+
+<p>Refresh the Bike Parking Data from the City</p>
+<ol>
+    <li>Prepare yourself for the database to be wiped clean (don't worry, it'll be reloaded in the next step)</li>
+    <li><a href="/services/load/">Click here</a></li>
+</ol>
+
+<p>
+    The app is the result of collaboration between <a href="https://github.com/bkenny266">Brian Kenny</a>, <a href="https://github.com/csharpie">Brad Steinberg</a>,
+    and <a href="https://github.com/plusjeff">Jeff Maher</a> (with guidance from <a href="https://github.com/davewalk">Dave Walk</a>) at the <a href="http://appsforphilly.org">#apps4philly</a> Transit Hackathon
+    in conjunction with <a href="http://codeforphilly.org">Code for Philly</a> (a <a href="http://brigade.codeforamerica.org">Code for America Brigade</a>).
+    Future development is planned and we're happy to work with others, so let us know if you want to join in. Or don't, and just
+    fork the project on <a href="https://github.com/plusjeff/kiqstnd">GitHub</a> (warning: the code is very ugly right now).
+</p>
+
+<p>
+    This app would not be possible without the awesome work of the City
+    of Philadelphia that provided open bike data sets. The original data sets we use can be found here:
+</p>
+
+<ul>
+    <li><a href="http://opendataphilly.org/opendata/resource/187/philadelphia-bike-racks/">Racks</a></li>
+    <li><a href="https://github.com/CityOfPhiladelphia/phl-open-geodata/tree/master/bicycle_thefts">Thefts</a></li>
+</ul>
+
+<p>
+    Lastly, the app makes use of the PHL Bike Theft REST API, a project created by the same group during
+    the same weekend. <a href="http://biketheft.jeffsbox.net">It can be found here</a>.
+</p>
+
+</body>
+
+</html>
