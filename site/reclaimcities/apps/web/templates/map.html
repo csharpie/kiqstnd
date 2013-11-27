@@ -23,7 +23,8 @@
 
         map = rcMap.getLeafletMap();
 
-		map.on('click', function(e) {
+
+		map.on('dblclick', function(e) {
 
 	    	lat = e.latlng["lat"];
 	    	lng = e.latlng["lng"];

@@ -41,7 +41,8 @@ RC.map = function (divId) {
 
     // Instance variables
     that.map = L.map(divId, {
-            scrollWheelZoom: false
+            scrollWheelZoom: false,
+            doubleClickZoom: false
         }
     );
     that.markersArray = [];
@@ -155,7 +156,7 @@ RC.map = function (divId) {
 
             // Search point
             var searchPoint = points[0]; //TODO Future - ask user to choose which address if more than one result is returned
-            that.focus(searchPoint);
+            that.focus(searchPoint, 17);
 
             // Nearby points and callback
             RC.Data.getNearbyLocations(searchPoint, function (nearbyPoints) {
