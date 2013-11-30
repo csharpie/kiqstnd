@@ -92,7 +92,7 @@
             starOff: "/static/images/star-off.png"
         });
 
-
+        $("#searchButton").button();
 
 
     });
@@ -318,12 +318,12 @@
 {% block content %}
     <div id="searchDiv">
         <p>
-            <strong>INSTRUCTIONS</strong>&nbsp;
-            Enter a street address (example: <em>1500 Chestnut St</em>).
+            <!--<strong>INSTRUCTIONS</strong>&nbsp;
+            Enter a street address (example: <em>1500 Chestnut St</em>).-->
         </p>
 
-        <input id="streetAddressInput" type="text" value=""/>
-        <input type="button" onclick="search()" value="Search"/>
+        <input id="streetAddressInput" type="text" value="" placeholder="Enter a street address (example: 1500 Chestnut St)"/>
+        <input id="searchButton" type="button" onclick="search()" value="Search"/>
         <!--<input type="button" onclick="findLocations()" value="Add"/>-->
         <a id="showHideResultDivLink" class="linkSpan" onclick="showHideResultDiv()">Show/Hide Results Table</a>
     </div>
