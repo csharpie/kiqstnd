@@ -6,3 +6,4 @@ from reclaimcities.apps.web.models import Location
 class AddLocation(forms.ModelForm):
     class Meta:
         model = Location
+        fields = '__all__'
