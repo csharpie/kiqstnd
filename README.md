@@ -1,4 +1,4 @@
-Kiqstand
+![Kiqstand](https://github.com/csharpie/kiqstnd/blob/master/site/reclaimcities/apps/web/static/images/logo.png)
 ======
 
 Bike parking locator (adapted from Reclaim Cities engine)
